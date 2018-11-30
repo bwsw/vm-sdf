@@ -6,7 +6,7 @@ lnmp-10:
   icon: /assets/lnmp-10.png
   license: Apache 2.0
   engine: ansible | docker-stack
-  source: /applications/L/lnmp-10/lnmp-10.tar.gz
+  source: https://reposerver.com/applications/L/lnmp-10/lnmp-10.tar.gz
   templates:
     - compatible-template1
     - compatible-template2

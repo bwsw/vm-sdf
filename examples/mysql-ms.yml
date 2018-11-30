@@ -8,7 +8,7 @@ mysql-ms-10:
   icon: /assets/mysql-master-slave-10.png
   license: Apache 2.0
   engine: ansible
-  source: /applications/L/mysql-ms-10/mysql-ms-10.tar.gz
+  source: https://reposerver.com/applications/L/mysql-ms-10/mysql-ms-10.tar.gz
   group: mysql-cluster-1
   templates:
     - ubuntu-template1
