@@ -1,6 +1,6 @@
 deployment-info:
 	engine: ansible
-	source: /applications/L/mysql-ms-10/mysql-ms-10.tar.gz
+	source: https://reposerver.com/applications/L/mysql-ms-10/mysql-ms-10.tar.gz
 	mode: RAW
 	features:
 		cloudstack-api-info:
