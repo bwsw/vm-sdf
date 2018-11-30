@@ -1,0 +1,34 @@
+deployment-info:
+	engine: ansible
+	source: /applications/L/mysql-ms-10/mysql-ms-10.tar.gz
+	mode: RAW
+	features:
+		cloudstack-api-info:
+			endpoint: https://api.com/client/api
+			access-key: aaaAAAA
+			secret-key: XXXXXXX
+		private-key-value-store:
+			endpoint: https://kvs.com/
+			name: UUID1
+			secret: XXXXXXX
+		shared-key-value-store:
+			endpoint: https://kvs.com/
+			name: UUID2
+			secret: XXXXXXX
+		log-store:
+			endpoint: https://logs.com/
+			name: VMUUID
+			secret: XXXXXXX
+	deployment-progress:
+		log: /var/log/deployment_log
+		private-key-value-store-key: deployment-progress
+		shared-key-value-store-key: deployment-progress
+	variables:
+		domain-name: www.com
+		mysql-root-password: XXXX
+		mysql-database: db1
+		mysql-user-name: username
+		mysql-user-password: XXX
+		mysql-php-admin-install: true
+		mysql-php-admin-https-port: 8443
+		use-lets-encrypt: true
