@@ -87,3 +87,48 @@ mysql-ms-10:
       integer_max: 32
       default: 1
       required: true
+
+mysql-mode:
+    label: MySQL mode
+    description: Specify how MySQL will be used
+    type: OneOf
+    options:
+        install:
+            labels: Install MySQL
+        use:
+            labels: Use Installed MySQL
+    default: install
+
+mysql-install-section:
+    label: MySQL Installation Options
+    description: Fill in important parameters for MySQL installation
+    type: Section
+    active-if:
+        sources:
+            mysql-mode: install
+    default: true
+
+mysql-install-root-password:
+  label: MySQL Root Password
+  description: Fill in the password for MySQL installation
+  type: Password
+  active-if:
+    sources:
+      mysql-install-section: true
+
+mysql-use-section:
+  label: Installed MySQL Options
+  description: Fill in important parameters for MySQL installation
+  type: Section
+  active-if:
+    sources:
+      mysql-mode: use
+  default: true
+
+mysql-use-root-password:
+  label: MySQL Root Password
+  description: Fill in the password for MySQL installation
+  type: Password
+  active-if:
+    sources:
+      mysql-use-section: true
