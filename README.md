@@ -25,79 +25,79 @@ VM-SDF построен на основе динамически генерир�
 
 ```yaml
 lnmp-10:
-  schema: /schemes/v10.yaml
-	name: LNMP Server
-	version: 1.0
-	description: LAMP Server (Linux, NGINX, MySQL, PHP FPM)
-	icon: /assets/lnmp-10.png
-	license: Apache 2.0
-	engine: ansible | docker-stack
-	source: /applications/L/lnmp-10/lnmp-10.tar.gz
-	templates:
-		- compatible-template1
-		- compatible-template2
-	minimal-disk-size: 10
-	features-requested:
-		pass-cloudstack-api-info: false
-		shared-key-value-store: false
-		private-key-value-store: true
-		log-store: true
-		use-ota: true
-	deployment-log: /var/log/deployment_log
-	deployment-progress:
-		private-key-value-store-key: 'deployment-progress'
-		[shared-key-value-store-key: ...]
-	variables:
-		domain-name:
-			description: 
-				default: Domain name for the first Website
-				ru_RU: Имя домена для создаваемого сайта			
-			type: FQDN_DNS
-			required: true
-			default: example.com
-		mysql-root-password:
-			description: 
-				default: Password for MySQL root user
-				ru_RU: ...
-			type: PASSWORD
-			length: 8
-			required: true
-		mysql-database:
-			description: MySQL database for the first Website
-			type: REGEX
-			regex: '...'
-			length: 10
-			default: db
-			required: true
-		mysql-user-name:
-			description: The name for the user who can access created database 
-			type: REGEX
-			regex: '...'
-			length: 8
-			default: www
-			required: true
-		mysql-user-password:
-			description: The password for the user who can access created database 
-			type: PASSWORD
-			length: 8
-			required: true
-		mysql-php-admin-install:
-			description: Do you want PhpMyAdmin to be installed? 
-			type: BOOLEAN
-			default: false
-			required: true
-		mysql-php-admin-https-port:
-			description: PhpMyAdmin HTTPS port to listen
-			type: INTEGER
-			integer_min: 1024
-			integer_max: 65535
-			default: 8443
-			required: true
-		use-lets-encrypt:			    
-			description: Use Let's Encrypt to autmatically protect HTTPS? 
-			type: BOOLEAN
-			default: true
-			required: true
+  schema: /schemes/vm-sdf-1.0.yaml
+  name: LNMP Server
+  version: 1.0
+  description: LAMP Server (Linux, NGINX, MySQL, PHP FPM)
+  icon: /assets/lnmp-10.png
+  license: Apache 2.0
+  engine: ansible | docker-stack
+  source: https://reposerver.com/applications/L/lnmp-10/lnmp-10.tar.gz
+  templates:
+    - compatible-template1
+    - compatible-template2
+  minimal-disk-size: 10
+  features-requested:
+    pass-cloudstack-api-info: false
+    shared-key-value-store: false
+    private-key-value-store: true
+    log-store: true
+    use-ota: true
+  deployment-log: /var/log/deployment_log
+  deployment-progress:
+    private-key-value-store-key: 'deployment-progress'
+    [shared-key-value-store-key: ...]
+  variables:
+    domain-name:
+      description:
+        default: Domain name for the first Website
+        ru_RU: Имя домена для создаваемого сайта
+      type: FQDN_DNS
+      required: true
+      default: example.com
+    mysql-root-password:
+      description:
+        default: Password for MySQL root user
+        ru_RU: ...
+      type: PASSWORD
+      length: 8
+      required: true
+    mysql-database:
+      description: MySQL database for the first Website
+      type: REGEX
+      regex: '...'
+      length: 10
+      default: db
+      required: true
+    mysql-user-name:
+      description: The name for the unprivileged user who can access created database
+      type: REGEX
+      regex: '...'
+      length: 8
+      default: www
+      required: true
+    mysql-user-password:
+      description: The password for the unprivileged user who can access created database
+      type: PASSWORD
+      length: 8
+      required: true
+    mysql-php-admin-install:
+      description: Do you want PhpMyAdmin to be installed?
+      type: BOOLEAN
+      default: false
+      required: true
+    mysql-php-admin-https-port:
+      description: PhpMyAdmin HTTPS port to listen
+      type: INTEGER
+      integer_min: 1024
+      integer_max: 65535
+      default: 8443
+      required: true
+    use-lets-encrypt:
+      description: Use Let's Encrypt to autmatically protect HTTPS?
+      type: BOOLEAN
+      default: true
+      required: true
 ```
 
 В более сложных случаях первая машина, которая выполняет конфигурацию может выступать в качестве seed-узла, который создает дополнительные машины. Пример данной конфигурации:
