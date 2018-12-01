@@ -104,93 +104,94 @@ lnmp-10:
 
 ```yaml
 mysql-ms-10:
-	schema: /schemes/v10.yaml
-	name: MySQL Master-Slaves Bundle
-	version: 1.0
-	description: 
-		default: MySQL Master-Slaves cluster with a single master and number of slaves
-		ru_RU: ...
-	icon: /assets/mysql-master-slave-10.png
-	license: Apache 2.0
-	engine: ansible
-	source: /applications/L/mysql-ms-10/mysql-ms-10.tar.gz
-group: mysql-cluster-1
-	templates:
-		- ubuntu-template1
-		- centos-template2
-	minimal-disk-size: 10
-	features-requested:
-		pass-cloudstack-api-info: true
-		shared-key-value-store: true
-		private-key-value-store: true
-		log-store: true
-		use-ota: true
-	deployment-log: /var/log/deployment_log
-	deployment-progress:
-		private-key-value-store-key: 'deployment-progress'
-		[shared-key-value-store-key: ...]
-	variables:
-		mysql-root-password:
-			description: 
-				default: Password for MySQL root user
-				ru_RU: ...
-			type: PASSWORD
-			length: 8
-			required: true
-		mysql-database:
-			description: MySQL database for the first Website
-			type: REGEX
-			regex: '...'
-			length: 10
-			default: db
-			required: true
-		mysql-user-name:
-			description: The name for the user who can access created database 
-			type: REGEX
-			regex: '...'
-			length: 8
-			default: www
-			required: true
-		mysql-user-password:
-			description: The password for the user who can access created database 
-			type: PASSWORD
-			length: 8
-			required: true
-		mysql-php-admin-install:
-			description: Do you want PhpMyAdmin to be installed? 
-			type: BOOLEAN
-			default: false
-			required: true
-		mysql-php-admin-https-port:
-			description: PhpMyAdmin HTTPS port to listen
-			type: INTEGER
-			integer_min: 1024
-			integer_max: 65535
-			default: 8443
-			required: true
-		use-lets-encrypt:			    
-			description: Use Let's Encrypt to autmatically protect HTTPS? 
-			type: BOOLEAN
-			default: true
-			required: true
-		mysql-slave-so:
-			description:
-				default: Service Offering for MySQL Slave Servers
-			type: SERVICE-OFFERING
-			service-offering:
-				minimal-cores: 2
-				minimal-frequency: 1000
-				minimal-ram: 2
-				minimal-disk-size: 10
-			required: true
-		mysql-slaves-count:
-			description:
-				default: Number of MySQL slave servers to be launched
-			type: INTEGER
-			integer_min: 1
-			integer_max: 32
-			default: 1
-			required: true
+  schema: /schemes/vm-sdf-1.0.yaml
+  name: MySQL Master-Slaves Bundle
+  version: 1.0
+  description:
+    default: MySQL Master-Slaves cluster with a single master and number of slaves
+    ru_RU: ...
+  icon: /assets/mysql-master-slave-10.png
+  license: Apache 2.0
+  engine: ansible
+  source: https://reposerver.com/applications/L/mysql-ms-10/mysql-ms-10.tar.gz
+  group: mysql-cluster-1
+  templates:
+    - ubuntu-template1
+    - centos-template2
+  minimal-disk-size: 10
+  features-requested:
+    pass-cloudstack-api-info: true
+    shared-key-value-store: true
+    private-key-value-store: true
+    log-store: true
+    use-ota: true
+    private-nic: true
+  deployment-log: /var/log/deployment_log
+  deployment-progress:
+    private-key-value-store-key: 'deployment-progress'
+    [shared-key-value-store-key: ...]
+  variables:
+    mysql-root-password:
+      description:
+        default: Password for MySQL root user
+        ru_RU: ...
+      type: PASSWORD
+      length: 8
+      required: true
+    mysql-database:
+      description: MySQL database for the first Website
+      type: REGEX
+      regex: '...'
+      length: 10
+      default: db
+      required: true
+    mysql-user-name:
+      description: The name for the unprivileged user who can access created database
+      type: REGEX
+      regex: '...'
+      length: 8
+      default: www
+      required: true
+    mysql-user-password:
+      description: The password for the unprivileged user who can access created database
+      type: PASSWORD
+      length: 8
+      required: true
+    mysql-php-admin-install:
+      description: Do you want PhpMyAdmin to be installed?
+      type: BOOLEAN
+      default: false
+      required: true
+    mysql-php-admin-https-port:
+      description: PhpMyAdmin HTTPS port to listen
+      type: INTEGER
+      integer_min: 1024
+      integer_max: 65535
+      default: 8443
+      required: true
+    use-lets-encrypt:
+      description: Use Let's Encrypt to autmatically protect HTTPS?
+      type: BOOLEAN
+      default: true
+      required: true
+    mysql-slave-so:
+      description:
+        default: Service Offering for MySQL Slave Servers
+      type: SERVICE-OFFERING
+      service-offering:
+        minimal-cores: 2
+        minimal-frequency: 1000
+        minimal-ram: 2
+        minimal-disk-size: 10
+      required: true
+    mysql-slaves-count:
+      description:
+        default: Number of MySQL slave servers to be launched
+      type: INTEGER
+      integer_min: 1
+      integer_max: 32
+      default: 1
+      required: true
 ```
 
 В данном случае, приложение создается на MySQL master-узле, который, в свою очередь, создает slave-узлы с помощью CloudStack API (pass-cloudstack-api-info: true), далее настраивает связку master-slave.
