@@ -180,21 +180,21 @@ deployment-info:
 
 ```yaml
 deployment-info:
-	mode: kvs
-	kvs:
-	  endpoint: https://kvs-uri.com/
-	  name: UUID1
-	  secret: XXXXXXX
+  mode: kvs
+  kvs:
+	endpoint: https://kvs-uri.com/
+	name: UUID1
+	secret: XXXXXXX
 ```
 
 **ota+kvs**. В этом режиме одноразовый токен `OTA` используется для безопасной передачи данных подключения к хранилищу KV, которое используется для передачи параметров конфигурации, как и в случае использования метода `KV`.
 
 ```yaml
 deployment-info:
-	mode: ota+kvs
-	ota+kvs:
-	  endpoint: https://ota.com/
-	  token: XXXXXXX
+  mode: ota+kvs
+  ota+kvs:
+	endpoint: https://ota.com/
+	token: XXXXXXX
 ```
   
 ## Типы переменных
@@ -216,25 +216,25 @@ deployment-info:
 
 ```yaml
 field-name:
-	label:
-		default: Name
-		ru_RU: Имя
-		en_US: Name
-		….
-	description:
-		default: Tooltip text
-		ru_RU: …
-		en_US
-	type: TYPE
-	active-if:
-		predicate: and | or
-		sources:
-			field-name-2: X
-			field-name-3: 
-              - Y
-              - Z
-	default: value
-	is-volatile: true | false 
+  label:
+  	default: Name
+  	ru_RU: Имя
+  	en_US: Name
+	….
+  description:
+	default: Tooltip text
+	ru_RU: …
+	en_US
+  type: TYPE
+  active-if:
+	predicate: and | or
+	  sources:
+		field-name-2: X
+		field-name-3: 
+          - Y
+          - Z
+  default: value
+  is-volatile: true | false 
 ```
 
 * **label** &ndash; то, что отображается в качестве имени поля;
@@ -256,9 +256,9 @@ label: value
 
 ```yaml
 label:
-    default: value
-    locale1: value
-    locale2: value
+  default: value
+  locale1: value
+  locale2: value
 ```
 
 В случае первого способа определения `value` используется как `default`, а в случае второго способа определения `label.default` &ndash; обязательный атрибут, Атрибуты других локалей опциональны.
@@ -275,9 +275,9 @@ description: value
 
 ```yaml
 description:
-    default: value
-    locale1: value
-    locale2: value
+  default: value
+  locale1: value
+  locale2: value
 ```
 
 В случае первого способа определения `value` используется как `default`, а в случае второго способа определения `description.default` &ndash; обязательный атрибут, Атрибуты других локалей опциональны.
@@ -302,54 +302,70 @@ description:
 
 Атрибут определяет может ли параметр изменяться после первоначальной установки. Это необходимо для разделения параметров, которые являются модифицируемыми после развертывания или не могут изменяться.
 
-По-умолчанию, 
+По-умолчанию, переменные не являются `volatile`, то есть устанавливаются только один раз.
 
 ## Переменная типа Number
 
-Дополнительно к атрибутам общего вида добавляются следующие атрибуты:
+Дополнительно к общим атрибутам добавляются следующие атрибуты:
+
 * **minimum** &ndash; минимально допустимое значение, по-умолчанию не ограничен;
 * **maximum** &ndash; максимально допустимое значание, по-умолчанию не ограничен;
-* **is-integer** &ndash; целое или float, по умолчанию `true`, то есть целое число.
+* **integer** &ndash; целое или float, по умолчанию `true`, то есть целое число.
 
 ### Переменная типа String
-Дополнительно добавляются следующие атрибуты:
-opt: minimum - минимальное количество символов
-opt: maximum - максимальное количество символов
-opt(false): is-multiline - input или text-area
-opt(false): multiline-base64 - трансформируется ли многострочный текст в однострочный base64
-opt: regex - регулярное выражение, которому должна соответствовать строка
 
-В случае (is-multiline: true, multiline-base64: false), в целевом YaML для данной переменной генерируется текст вида:
+Дополнительно к общим атрибутам добавляются следующие атрибуты:
 
+* **minimum-length** &ndash; минимально допустимое количество символов, по-умолчанию 0;
+* **maximum-length** &ndash; максимально допустимое количество символов, по-умолчанию 255;
+* **multiline** &ndash; используется ли однострочный компонент или многострочный компонент типа `textarea`, по-умолчанию `false`;
+* **base64** &ndash; осуществлять ли кодирование введенной информации в `base64`, по-умолчанию, если не задано иное, принимает то же значени, что и атрибут `multiline`;
+* **regex** &ndash; регулярное выражение, используемое для оценки корректности.
+
+В случае `multiline: true, base64: false`, в целевом YaML для данной переменной генерируется текст вида:
+
+```yaml
 varname:
-line1
-line2
-line3
-line4
+  - line1
+  - line2
+  - line3
+  - line4
+  - ...
+```
 
 Не забываем про специальные символы в YaML, генерировать лучше с помощью DOM-библиотеки, а не вручную.
-### DomainName
-Однострочная STRING с валидатором корректного FQDN.
-### IpAddress
-Поле ввода IP-адреса в форме строки. Дополнительные параметры:
-opt(4): version - версия протокола, может иметь значение 4, 6.
-opt(false): is_cidr: true|false - должен ли пользователь вводить префикс CIDR-сети или нет.
 
+### Переменная типа DomainName
+
+Однострочное поле типа String с валидатором корректного FQDN.
+
+### Переменная типа IpAddress
+
+Поле ввода IP-адреса в форме строки. Дополнительные параметры:
+
+* **version** &ndash; версия протокола, может иметь значения `4` и/или `6`, по-умолчанию `4`;
+* **network-address** &ndash; должен пользователь вводить адрес в формате сети CIDR (`ip/prefix`) или для одиночного хоста, по-умолчанию `false`;
+
+```yaml
 field:
-	cidr: true
-version:
-4
-6
+  type: IpAddress
+  network-address: true
+  version:
+    - 4
+    - 6
 
 field4:
-	cidr: false
+  type: IpAddress
+  network-address: false
 	version:
-4
+      - 4
 
 field6:
-	cidr: true
+  type: IpAddress
+  cidr: true
 	version:
-6
+      - 6
+```
 
 ### URI
 
