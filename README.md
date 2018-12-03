@@ -143,26 +143,26 @@ deployment-info:
   mode: raw
   application-manifest: base64-encoded-manifest-for-application
   features:
-	vm-key-value-storage:
-	  endpoint: https://kvs.com/
-	  name: UUID1
-	  secret: XXXXXXX
-	log-store:
-	  endpoint: https://logs.com/
-	  name: VMUUID
-	  secret: XXXXXXX
+    vm-key-value-storage:
+      endpoint: https://kvs.com/
+      name: UUID1
+      secret: XXXXXXX
+    log-store:
+      endpoint: https://logs.com/
+      name: VMUUID
+      secret: XXXXXXX
   deployment-progress:
-	log: /var/log/deployment_log
-	vm-key: deployment-progress
+    log: /var/log/deployment_log
+    vm-key: deployment-progress
   variables:
-	domain-name: www.com
-	mysql-root-password: XXXX
-	mysql-database: db1
-	mysql-user-name: username
-	mysql-user-password: XXX
-	mysql-php-admin-install: true
-	mysql-php-admin-https-port: 8443
-	use-lets-encrypt: true
+    domain-name: www.com
+    mysql-root-password: XXXX
+    mysql-database: db1
+    mysql-user-name: username
+    mysql-user-password: XXX
+    mysql-php-admin-install: true
+    mysql-php-admin-https-port: 8443
+    use-lets-encrypt: true
 ```
 
 ## Способы передачи данных в USERDATA
