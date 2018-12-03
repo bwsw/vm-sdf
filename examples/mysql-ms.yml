@@ -132,3 +132,11 @@ mysql-use-root-password:
   active-if:
     sources:
       mysql-use-section: true
+
+
+template-id:
+    name:
+    description:
+    tags:
+      tag1k: tag1v
+      ...

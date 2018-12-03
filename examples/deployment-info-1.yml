@@ -25,7 +25,6 @@ deployment-info:
   mysql-php-admin-https-port: 8443
   use-lets-encrypt: true
 
-
 field:
   type: IpAddress
   network-address: true
