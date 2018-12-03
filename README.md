@@ -357,14 +357,14 @@ field:
 field4:
   type: IpAddress
   network-address: false
-	version:
-      - 4
+  version:
+    - 4
 
 field6:
   type: IpAddress
   cidr: true
-	version:
-      - 6
+  version:
+    - 6
 ```
 
 ### URI

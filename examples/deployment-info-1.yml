@@ -26,7 +26,21 @@ deployment-info:
   use-lets-encrypt: true
 
 
-label:
-  default: value
-  locale1: value
-  locale2: value
+field:
+  type: IpAddress
+  network-address: true
+  version:
+    - 4
+    - 6
+
+field4:
+  type: IpAddress
+  network-address: false
+  version:
+    - 4
+
+field6:
+  type: IpAddress
+  cidr: true
+  version:
+    - 6
