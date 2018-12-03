@@ -24,3 +24,9 @@ deployment-info:
   mysql-php-admin-install: true
   mysql-php-admin-https-port: 8443
   use-lets-encrypt: true
+
+
+label:
+  default: value
+  locale1: value
+  locale2: value

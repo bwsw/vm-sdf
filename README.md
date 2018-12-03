@@ -182,9 +182,9 @@ deployment-info:
 deployment-info:
   mode: kvs
   kvs:
-	endpoint: https://kvs-uri.com/
-	name: UUID1
-	secret: XXXXXXX
+    endpoint: https://kvs-uri.com/
+    name: UUID1
+    secret: XXXXXXX
 ```
 
 **ota+kvs**. В этом режиме одноразовый токен `OTA` используется для безопасной передачи данных подключения к хранилищу KV, которое используется для передачи параметров конфигурации, как и в случае использования метода `KV`.
@@ -193,8 +193,8 @@ deployment-info:
 deployment-info:
   mode: ota+kvs
   ota+kvs:
-	endpoint: https://ota.com/
-	token: XXXXXXX
+    endpoint: https://ota.com/
+    token: XXXXXXX
 ```
   
 ## Типы переменных
@@ -217,24 +217,24 @@ deployment-info:
 ```yaml
 field-name:
   label:
-  	default: Name
-  	ru_RU: Имя
-  	en_US: Name
-	….
+    default: Name
+    ru_RU: Имя
+    en_US: Name
+    ….
   description:
-	default: Tooltip text
-	ru_RU: …
-	en_US
+    default: Tooltip text
+    ru_RU: …
+    en_US
   type: TYPE
   active-if:
-	predicate: and | or
-	  sources:
-		field-name-2: X
-		field-name-3: 
-          - Y
-          - Z
-  default: value
-  is-volatile: true | false 
+  predicate: and | or
+    sources:
+      field-name-2: X
+      field-name-3:
+        - Y
+        - Z
+    default: value
+    is-volatile: true | false
 ```
 
 * **label** &ndash; то, что отображается в качестве имени поля;
