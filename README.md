@@ -50,7 +50,7 @@ lnmp-10:
   license: 
     name: Apache License, Version 2.0
     description: Свободная лицензия без ограничений на использование
-    url: http://apache.org/license  engine: ansible
+    url: http://apache.org/license
   source: https://reposerver.com/applications/L/lnmp-10/lnmp-10.tar.gz
   template:
     match-tags:
@@ -156,14 +156,13 @@ lnmp-10:
 
 ```yaml
 deployment-info:
-  engine: ansible
   manifest-schema: /schemes/vm-sdf-manifest-1.0.yaml
   userdata-schema: /schemes/vm-sdf-userdata-1.0.yaml
   source: https://reposerver.com/applications/L/lnmp/lnmp-10.tar.gz
   mode: raw
   application-manifest: base64-encoded-manifest-for-application
   features:
-    vm-key-value-storage:
+    vm-db:
       endpoint: https://kvs.com/
       name: UUID1
       secret: XXXXXXX
@@ -626,7 +625,6 @@ service-offering:
     name: Apache License, Version 2.0
     description: Свободная лицензия без ограничений на использование
     url: http://apache.org/license
-  engine: ansible
   features-requested:
     vm-key-value-storage: true
     log-storage: true
@@ -685,10 +683,6 @@ service-offering:
 
 При задании `description` пользователь использует однострочное описание в упрощенном или локализованном виде.
 
-### Атрибут `engine`
-
-Предназначен для внутреннего приложения в VM, которое будет управлять развертыванием. Атрибут опционален.
-
 ### Атрибут `features-requested`
 
 Атрибут используется для определения того, какие системные параметры будут переданы в сгенерированный конфигурационный файл. Для каждого вложенного атрибута пользователь должен явно подтвердить согласие на его передачу в конфигурационный файл.
@@ -737,4 +731,88 @@ service-offering:
 
 ## Целевая конфигурация приложения в формате YaML
 
-Для простоты сгенерированный код конфигурации развертываемого приложения в формате YaML будем называть `файл конфигурации`.
+Для простоты сгенерированный код конфигурации развертываемого приложения в формате YaML будем называть _файл конфигурации_.
+
+Файл конфигурации генерируется на основании пользовательских значений и предопределенных параметров манифеста приложения. Далее в разделе мы рассмотрим как именно происходит генерация файла конфигурации.
+
+Формат сгенерированного файла должен соответствовать YaML схеме определенной в атрибуте `userdata-schema`.
+
+При генерации создается корневой атрибут `deployment-info`, все остальные атрибуты являются его потомками.
+
+### Атрибут `manifest-schema`
+
+Генерируется переносом из манифеста.
+
+```yaml
+manifest-schema: /schemes/vm-sdf-manifest-1.0.yaml
+```
+
+### Атрибут `userdata-schema`
+
+Генерируется переносом из манифеста.
+
+```yaml
+userdata-schema: /schemes/vm-sdf-userdata-1.0.yaml
+```
+
+### Атрибут `source`
+
+Генерируется переносом из манифеста.
+
+```yaml
+source: https://reposerver.com/applications/L/lnmp/lnmp-10.tar.gz
+```
+
+### Атрибут `mode`
+
+Генерируется переносом из манифеста.
+
+```yaml
+mode: raw
+```
+
+### Атрибут `application-manifest`
+
+Генерируется из манифеста кодированием в base64.
+
+```yaml
+  application-manifest: base64-encoded-manifest-for-application
+```
+
+### Атрибут `features`
+
+Атрибут содержит определения для всех запрошенных системных свойств.
+
+#### Атрибут `features.vm-db`
+
+Генерируется, если запрашивается `vm-db`. Позволяет передать в VM KVS, созданную для нее. При генерации передаются все данные для использования:
+
+```yaml
+vm-db:
+  endpoint: https://kvs.com/
+  name: UUID1
+  secret: XXXXXXX
+```
+
+> Данный атрибут невозможно сгенерировать до создания виртуальной машины, поэтому сначала необходимо создать машину в остановленном состоянии, затем получить данные KVS, созданного для VM, а потом обновить файл конфигурации.
+
+```yaml
+  features:
+    log-store:
+      endpoint: https://logs.com/
+      name: VMUUID
+      secret: XXXXXXX
+  deployment-progress:
+    log: /var/log/deployment_log
+    vm-key: deployment-progress
+  variables:
+    domain-name: www.com
+    mysql-root-password: XXXX
+    mysql-database: db1
+    mysql-user-name: username
+    mysql-user-password: XXX
+    mysql-php-admin-install: true
+    mysql-php-admin-https-port: 8443
+    use-lets-encrypt: true
+```
+
