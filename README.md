@@ -166,7 +166,7 @@ deployment-info:
       endpoint: https://kvs.com/
       name: UUID1
       secret: XXXXXXX
-    log-store:
+    logs:
       endpoint: https://logs.com/
       name: VMUUID
       secret: XXXXXXX
@@ -796,12 +796,53 @@ vm-db:
 
 > Данный атрибут невозможно сгенерировать до создания виртуальной машины, поэтому сначала необходимо создать машину в остановленном состоянии, затем получить данные KVS, созданного для VM, а потом обновить файл конфигурации.
 
+#### Атрибут `features.application-db`
+
+Генерируется, если запрашивается `application-db`. Позволяет передать в VM KVS, созданную для для приложения. При генерации передаются все данные для использования:
+
 ```yaml
-  features:
-    log-store:
-      endpoint: https://logs.com/
-      name: VMUUID
-      secret: XXXXXXX
+application-db:
+  endpoint: https://kvs.com/
+  name: KVSUUID
+  secret: XXXXXXX
+```
+
+#### Атрибут `features.temporary-db`
+
+Генерируется, если запрашивается `temporary-db`. Позволяет передать в VM временное KVS. При генерации передаются все данные для использования:
+
+```yaml
+temporary-db:
+  endpoint: https://kvs.com/
+  name: KVSUUID
+  secret: XXXXXXX
+```
+
+#### Атрибут `features.cloudstack-api`
+
+Генерируется, если запрашивается `cloudstack-api`. Позволяет передать в VM данные для доступа к CloudStack от имени аккаунта (`endpoint`, `api-key`, `secret-key`):
+
+```yaml
+cloudstack-api:
+  endpoint: https://cloudstack.api/client/api
+  api-key: apikey
+  secret-key: secret
+```
+
+#### Атрибут `features.logs`
+
+Генерируется, если запрашивается `logs`. Позволяет передать в VM данные для удаленного логгирования:
+
+```yaml
+logs:
+  endpoint: https://logs.com/
+  name: UUID1
+  secret: XXXXXXX
+```
+
+> Данный атрибут невозможно сгенерировать до создания виртуальной машины, поэтому сначала необходимо создать машину в остановленном состоянии, затем получить данные для логирования, а потом обновить файл конфигурации.
+
+```yaml
   deployment-progress:
     log: /var/log/deployment_log
     vm-key: deployment-progress
