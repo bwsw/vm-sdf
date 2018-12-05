@@ -63,12 +63,44 @@ lnmp-10:
         minimal-ram: 1024
         minimal-cores: 2
         minimal-frequency: 1000
+  network-security:
+    ingress:
+      - rule:
+          protocol: icmp
+          type: -1
+          code: -1
+          cidr: 0.0.0.0/0
+      - rule:
+          protocol: tcp
+          ports: 
+            - 80
+            - 22
+            - 1025-5555
+          cidr: 0.0.0.0/0
+    egress:
+      - rule:
+          protocol: icmp
+          type: -1
+          code: -1
+          cidr: 0.0.0.0/0
+      - rule:
+          protocol: tcp
+          ports:
+            - 1-65535
+          cidr: 0.0.0.0/0
   features-requested:
     - application-db
     - logs
   deployment-progress:
     log: /var/log/deployment_log
     application-key: 'deployment-progress'
+  application-state:
+    mysql-state:
+      default: MySQL server state 
+      ru_RU: Состояние сервера MySQL
+    nginx-state:
+      default: Nginx server state
+      ru_RU: Состояние Nginx
   variables:
     domain-name:
       description:
@@ -631,7 +663,39 @@ service-offering:
     use-ota: true
   deployment-progress:
     log: /var/log/deployment_log
+  application-state:
+    mysql-state:
+      default: MySQL server state 
+      ru_RU: Состояние сервера MySQL
+    nginx-state:
+      default: Nginx server state
+      ru_RU: Состояние Nginx
     vm-key: 'deployment-progress'
+  network-security:
+    ingress:
+      - rule:
+          protocol: icmp
+          type: -1
+          code: -1
+          cidr: 0.0.0.0/0
+      - rule:
+          protocol: tcp
+          ports: 
+            - 80
+            - 22
+            - 1025-5555
+          cidr: 0.0.0.0/0
+    egress:
+      - rule:
+          protocol: icmp
+          type: -1
+          code: -1
+          cidr: 0.0.0.0/0
+      - rule:
+          protocol: tcp
+          ports:
+            - 1-65535
+          cidr: 0.0.0.0/0
 ```
 
 ### Атрибут `mode`
@@ -720,6 +784,114 @@ service-offering:
 
 * **log** &ndash; определяет файл журнала, в который будут поступать _сырые_ записи о ходе развертывания;
 * **application-key** &ndash; определяет ключ в разделяемом KVS приложения, в который могут складываться структурированные обновления, связанные с развертыванием.
+
+### Атрибут `application-state`
+
+Атрибут используется системой CSUI для поиска атрибутов, в которых будет содержаться информация о состоянии приложения в процессе работы. В некотором смысле &ndash; это упрощенный Zabbix для приложения. Данная секция используется для отображения формы состояния развернутого приложения (описана далее).
+
+### Атрибут `network-security`
+
+Атрибут используется для создания группы безопасности для seed-сервера приложения.
+
+При создании приложения пользователь должен подтвердить разрешение на указанные порты. 
+
+В том случае, если зона не поддерживает группы безопасности, данная секция игнорируется.
+
+Для приложения создается новая отдельная группа безопасности.
+
+#### `network-security.{ingress, egress}`
+
+Атрибуты задают правила для `ingress` и `egress` трафика соответственно.
+
+#### `network-security.{ingress, egress}.-rule`
+
+Атрибут содержит конкретные правила для группы безопасности.
+
+##### `network-security.{ingress, egress}.-rule.protocol={tcp,udp}`
+
+Правила для TCP, UDP:
+
+```yaml
+- rule:
+    protocol: tcp
+    ports:
+      - 1-65535
+    cidr: 0.0.0.0/0
+```
+
+Атрибут `protocol` содержит строку `tcp` или `udp`.
+
+Атрибут `ports` содержит список портов, которые относятся к правилу. Порты могут задаваться двумя способами:
+* `port` &ndash; транслируется в `port-port` и определяет одиночный порт.
+* `port-port` &ndash; соответствует диапазону портов.
+
+В одном правиле для атрибута `ports` может быть несколько перечислений:
+
+```yaml
+ports:
+  - 80
+  - 8080
+  - 443
+  - 10000-20000
+```
+
+Атрибут `cidr` может содержать одно или более CIDR для разрешенных сетей.
+
+```yaml
+cidr: 0.0.0.0/0
+```
+
+```yaml
+cidr:
+  - 10.0.0.0/8
+  - 8.8.0.0/16
+  - ::/0
+```
+
+Поддерживаются v4 и v6 адреса.
+
+##### `network-security.{ingress, egress}.-rule.protocol=icmp`
+
+Правила для ICMP:
+
+```yaml
+- rule:
+    protocol: icmp
+    type: -1
+    code: -1
+    cidr: 0.0.0.0/0
+```
+
+Атрибут `protocol` содержит строку `icmp`.
+
+Атрибут `type` содержит ICMP тип (положительное целое число или `-1`).
+
+Атрибут `code` содержит ICMP код (положительное целое число или `-1`).
+
+В одном правиле для атрибута `ports` может быть несколько перечислений:
+
+```yaml
+ports:
+  - 80
+  - 8080
+  - 443
+  - 10000-20000
+```
+
+Атрибут `cidr` может содержать одно или более CIDR для разрешенных сетей.
+
+```yaml
+cidr: 0.0.0.0/0
+```
+
+```yaml
+cidr:
+  - 10.0.0.0/8
+  - 8.8.0.0/16
+  - ::/0
+```
+
+Поддерживаются v4 и v6 адреса.
 
 ## Автоматически-генерируемые переменные манифеста
 
@@ -842,18 +1014,21 @@ logs:
 
 > Данный атрибут невозможно сгенерировать до создания виртуальной машины, поэтому сначала необходимо создать машину в остановленном состоянии, затем получить данные для логирования, а потом обновить файл конфигурации.
 
-```yaml
-  deployment-progress:
-    log: /var/log/deployment_log
-    vm-key: deployment-progress
-  variables:
-    domain-name: www.com
-    mysql-root-password: XXXX
-    mysql-database: db1
-    mysql-user-name: username
-    mysql-user-password: XXX
-    mysql-php-admin-install: true
-    mysql-php-admin-https-port: 8443
-    use-lets-encrypt: true
-```
+### Атрибут `deployment-progress`
 
+Данный атрибут и его содержимое переносится из манифеста как есть. Поддерживаются атрибуты `vm-key`, `log`, `application-key`.
+
+### Атрибут `variables`
+
+В данном атрибуте формируются все переменные параметры, указанные пользователем, включая `last-update` и `last-update-author`, которые генерируются автоматически и заполняются текущим временем в формате `unixtime` и `UUID` пользователя, который произвел изменение.
+
+
+## Диаграмма развертывания приложения
+
+![](assets/application-deployment-scheme.png)
+
+Для работы VM-SDF обязательно наличие плагина KVS. В том случае, если плагин KVS не поддерживается сервером, то подсистема `VM-SDF` не работает.
+
+При выборе приложения система сначала проверяет, что пользователю доступны все запрашиваемые возможности (KVS, Logs). В том случае, если какая-то из возможностей отсутствует, система показывает пользователю сообщение об этом.
+
+Далее, выполнение развертывания происходит по шагам, отображенным на схеме.
