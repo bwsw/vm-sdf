@@ -94,6 +94,7 @@ lnmp-10:
   deployment-progress:
     log: /var/log/deployment_log
     application-key: 'deployment-progress'
+    application-deployment-complete-label: 'dafcbe0d4111d0d42378ec40545489ac'
   application-state:
     mysql-state:
       default: MySQL server state 
@@ -778,12 +779,14 @@ service-offering:
   deployment-progress:
     log: /var/log/deployment_log
     application-key: 'deployment-progress'
+    application-deployment-complete-label: 'dafcbe0d4111d0d42378ec40545489ac'
 ```
 
 Поддерживаются следующие вложенные атрибуты:
 
 * **log** &ndash; определяет файл журнала, в который будут поступать _сырые_ записи о ходе развертывания;
 * **application-key** &ndash; определяет ключ в разделяемом KVS приложения, в который могут складываться структурированные обновления, связанные с развертыванием.
+* **application-deployment-complete-label** &ndash; определяется метку, которая означает, что установка завершена; UI ожидает появление данной метки в ключе указанном  `application-key`.
 
 ### Атрибут `application-state`
 
@@ -1016,7 +1019,7 @@ logs:
 
 ### Атрибут `deployment-progress`
 
-Данный атрибут и его содержимое переносится из манифеста как есть. Поддерживаются атрибуты `vm-key`, `log`, `application-key`.
+Данный атрибут и его содержимое переносится из манифеста как есть. Поддерживаются атрибуты `vm-key`, `log`, `application-key`, `application-deployment-complete-label`.
 
 ### Атрибут `variables`
 
@@ -1032,3 +1035,7 @@ logs:
 При выборе приложения система сначала проверяет, что пользователю доступны все запрашиваемые возможности (KVS, Logs). В том случае, если какая-то из возможностей отсутствует, система показывает пользователю сообщение об этом.
 
 Далее, выполнение развертывания происходит по шагам, отображенным на схеме.
+
+## Реализация в CSUI
+
+Для поддержки приложений создается отдельный плагин Applications, который представлен отдельным пунктом меню "Applications". 
